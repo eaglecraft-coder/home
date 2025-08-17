@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Project Hub</title>
+  <meta name="description" content="Cleanes Portfolio mit App Store Vibes" />
+  <style>
+    :root{
+      --bg: #0b0b0c;
+      --surface: #0f0f10;
+      --card: #141416;
+      --elev: #1a1a1c;
+      --text: #f5f5f7;
+      --muted: #9ba0a6;
+      --ring: #2a2a2e;
+      --blue: #0a84ff;
+      --green: #30d158;
+      --orange: #ff9f0a;
+      --pink: #ff375f;
+      --purple: #bf5af2;
+      --teal: #64d2ff;
+      --radius: 16px;
+      --shadow: 0 10px 30px rgba(0,0,0,.35), 0 2px 8px rgba(0,0,0,.25);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", Roboto, Inter, Ubuntu, system-ui, "Noto Sans", Arial, sans-serif;
+      color:var(--text);
+      background: radial-gradient(1200px 800px at 80% -10%, rgba(10,132,255,.15), transparent 60%),
+                  radial-gradient(900px 600px at 10% -20%, rgba(191,90,242,.12), transparent 55%),
+                  var(--bg);
+      line-height:1.45;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    a{color:inherit;text-decoration:none}
+    img{display:block;max-width:100%}
+
+    .container{width:min(1200px, 92%);margin:0 auto}
+
+    /* Top Nav */
+    header{
+      position:sticky;top:0;z-index:100;
+      backdrop-filter:saturate(180%) blur(14px);
+      background:rgba(15,15,16,.6);
+      border-bottom:1px solid var(--ring);
+    }
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:16px 0}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{
+      width:28px;height:28px;border-radius:8px;
+      background:conic-gradient(from 180deg, var(--blue), var(--purple), var(--pink), var(--orange), var(--blue));
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.25), 0 6px 18px rgba(10,132,255,.35);
+    }
+    .brand span{font-weight:700;letter-spacing:.2px}
+
+    /* Hero */
+    .hero{padding:64px 0 24px}
+    .h-eyebrow{color:var(--muted);font-size:14px;margin:0 0 8px}
+    h1{font-size: clamp(32px, 6vw, 56px);margin:0 0 16px;letter-spacing:-.4px}
+    .lead{font-size: clamp(16px, 2.4vw, 20px);color:var(--muted);max-width:68ch}
+
+    /* Grid */
+    .grid{display:grid;grid-template-columns:repeat(12, 1fr);gap:18px;margin:32px 0 64px}
+    .card{grid-column: span 4;background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0));
+      border:1px solid var(--ring);border-radius:var(--radius);box-shadow:var(--shadow);
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;overflow:hidden;position:relative}
+    .card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.25)}
+    .card-inner{padding:18px}
+    .card-head{display:flex;gap:14px;align-items:center}
+    .app-icon{width:64px;height:64px;border-radius:14px;box-shadow: inset 0 0 0 1px rgba(255,255,255,.25), 0 8px 20px rgba(0,0,0,.35);flex:0 0 auto}
+    .app-title{font-size:18px;font-weight:700;margin:2px 0 4px}
+    .app-desc{font-size:14px;color:var(--muted);margin:0}
+    .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    .tag{font-size:12px;padding:6px 10px;border-radius:999px;border:1px solid var(--ring);background:rgba(255,255,255,.04)}
+    .tag[data-tone="blue"]{background:rgba(10,132,255,.12);border-color:rgba(10,132,255,.35)}
+    .tag[data-tone="green"]{background:rgba(48,209,88,.12);border-color:rgba(48,209,88,.35)}
+    .tag[data-tone="orange"]{background:rgba(255,159,10,.12);border-color:rgba(255,159,10,.35)}
+    .tag[data-tone="pink"]{background:rgba(255,55,95,.12);border-color:rgba(255,55,95,.35)}
+
+    /* Detail view */
+    .view{display:none}
+    .view.active{display:block}
+    .back{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);padding:8px 0}
+
+    .detail-header{display:flex;gap:24px;align-items:center;margin:16px 0 18px}
+    .detail-icon{width:116px;height:116px;border-radius:24px;box-shadow: inset 0 0 0 1px rgba(255,255,255,.25), 0 16px 30px rgba(0,0,0,.45)}
+    .detail-title{font-size: clamp(24px, 5vw, 40px);margin:0}
+    .detail-sub{margin:6px 0 0;color:var(--muted)}
+
+    .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 16px;border-radius:12px;border:1px solid var(--ring);background:rgba(255,255,255,.04);color:var(--text);cursor:pointer}
+    .btn.primary{background:var(--text);color:#000}
+
+    .gallery{display:grid;grid-template-columns:repeat(12, 1fr);gap:12px;margin:22px 0}
+    .shot{grid-column: span 4;border-radius:16px;overflow:hidden;border:1px solid var(--ring);cursor:pointer}
+
+    .section{margin:18px 0 28px}
+    .section h3{margin:0 0 8px;font-size:18px}
+    .section p{margin:0;color:var(--muted)}
+    .feature-list{display:grid;grid-template-columns:repeat(2, minmax(0,1fr));gap:10px;margin-top:10px}
+    .feature{padding:12px 14px;border-radius:12px;border:1px solid var(--ring);background:rgba(255,255,255,.03)}
+
+    /* Lightbox */
+    .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.82);display:none;align-items:center;justify-content:center;padding:24px;z-index:300}
+    .lightbox.open{display:flex}
+    .lightbox-frame{position:relative;width:min(1200px, 92%);height:min(82vh, 800px);background:#000;border-radius:16px;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center}
+    .lightbox img{max-width:100%;max-height:100%}
+    .lightbox .nav{position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;padding:0 8px}
+    .lightbox button{border:none;background:rgba(255,255,255,.08);color:#fff;padding:12px 14px;border-radius:12px;cursor:pointer}
+    .lightbox .close{position:absolute;top:10px;right:10px}
+
+    /* Footer */
+    footer{border-top:1px solid var(--ring);color:var(--muted);padding:28px 0 40px;margin-top:40px}
+
+    /* Responsive */
+    @media (max-width: 980px){
+      .card{grid-column: span 6}
+      .detail-header{flex-direction:column;align-items:flex-start}
+      .detail-icon{width:96px;height:96px;border-radius:20px}
+      .gallery .shot{grid-column: span 6}
+      .feature-list{grid-template-columns:1fr}
+    }
+    @media (max-width: 620px){
+      .card{grid-column: span 12}
+      .gallery .shot{grid-column: span 12}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a href="#" class="brand" aria-label="Home">
+        <div class="logo" aria-hidden="true"></div>
+        <span>Eaglecraft-Coder</span>
+      </a>
+      <nav aria-label="Primary">
+        <a href="#" class="btn" style="padding:8px 12px">Home</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Home View -->
+    <section id="home" class="view active" aria-labelledby="home-title">
+      <div class="hero">
+        <p class="h-eyebrow">Aktuelle Projekte</p>
+        <h1 id="home-title">Willkommen!</h1>
+        <p class="lead">Hier kannst du meine Projekte Herrunterlanden! Die webseite wird in den nächsten Monaten noch angepasst! Die Download-links werden bald Funktionieren!</p>
+      </div>
+
+      <div id="grid" class="grid" aria-label="Projektliste"></div>
+    </section>
+
+    <!-- Detail View -->
+    <section id="detail" class="view" aria-live="polite"></section>
+  </main>
+
+  <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Screenshot Viewer">
+    <div class="lightbox-frame">
+      <img id="lightbox-img" alt="Screenshot" />
+      <div class="nav">
+        <button id="lb-prev" aria-label="Vorheriger Screenshot">◀</button>
+        <button id="lb-next" aria-label="Nächster Screenshot">▶</button>
+      </div>
+      <button id="lb-close" class="close" aria-label="Schließen">✕</button>
+    </div>
+  </div>
+
+  <footer class="container">
+    <small>© <span id="y"></span>EagleCraft</small>
+  </footer>
+
+<script>
+  // ---------- Demo Daten: Einfach anpassen ----------
+  const projects = [
+    {
+      id: "biketacho",
+      title: "BikeTacho",
+      tags: [
+        { label: "Release 1.0", tone: "green" },
+        { label: "Android", tone: "green" },
+        { label: "Tools", tone: "pink" }
+        ],
+      summary: "Minimaler Fahrrad Tacho mit Musiksteuerung für Android.",
+      description: `BikeTacho zeigt aktuelle Geschwindigkeit und Distanz. Musiksteuerung ist integriert. Sauberes UI mit großem Tacho.`,
+      features: [
+        "Aktuelle Geschwindigkeit in groß",
+        "Zurücksetzbarer Trip Zähler",
+        "Musiksteuerung direkt im Screen",
+        "Energiesparende Standort Abfrage"
+      ],
+      accent: "#0a84ff",
+      iconLetter: "B",
+      screenshots: placeholderShots("BikeTacho", "#0a84ff"),
+      links: { download: "download", repo: "#" }
+    },
+    {
+      id: "cookgpt",
+      title: "CookGPT",
+      tags: [
+  { label: "Beta 0.9", tone: "orange" },
+  { label: "Windows", tone: "blue" },
+  { label: "Mac OS", tone: "blue" },
+  { label: "AI", tone: "pink" }
+],
+
+      summary: "KI Koch App. Rezepte aus Kühlschrank Fotos und Vorlieben.",
+      description: `App erkennt Zutaten aus Fotos und schlägt passende Rezepte vor. Spracheingabe und Schritt Anzeige helfen beim Kochen."`,
+      features: [
+        "Zutaten Erkennung aus Bildern",
+        "Persönliche Rezept Vorschläge",
+        "Voice Assist beim Kochen",
+        "Offline Modus geplant"
+      ],
+      accent: "#bf5af2",
+      iconLetter: "C",
+      screenshots: placeholderShots("CookGPT", "#bf5af2"),
+      links: { download: "#", repo: "#" }
+    },
+    {
+      id: "prankbox",
+      title: "PrankBox",
+      tags: [
+  { label: "Beta 0.5", tone: "orange" },
+  { label: "Android", tone: "green" },
+  { label: "Fun", tone: "pink" }
+],
+
+      summary: "Sammlung von Fun Tools und Fake Notifications.",
+      description: `Mehrere kleine Pranks in einer App. Benachrichtigungen simulieren, Fake Updates und mehr."`,
+      features: [
+        "Zeitgesteuerte Fake Notifications",
+        "Kleine Tools in einer App",
+        "Sehr einfache Steuerung",
+        "Helle und dunkle Themes"
+      ],
+      accent: "#ff375f",
+      iconLetter: "P",
+      screenshots: placeholderShots("PrankBox", "#ff375f"),
+      links: { download: "#", repo: "#" }
+    },
+    {
+      id: "test",
+      title: "Test",
+      tags: [
+  { label: "Status", tone: "orange" },
+  { label: "OS", tone: "blue" },
+  { label: "Kategorie", tone: "pink" }
+],
+
+      summary: "Hier entsteht bald ein neues Projekt...",
+      description: `... und hier ist die Beschreibung"`,
+      features: [
+        "Highlight",
+        "Highlight",
+        "Highlight",
+        "Highlight"
+      ],
+      accent: "#bf5af2",
+      iconLetter: "T",
+      screenshots: placeholderShots("Test", "#bf5af2"),
+      links: { download: "#", repo: "#" }
+    },
+    
+
+    
+  ];
+  
+
+  // ---------- Render Logic ----------
+  const homeView = document.getElementById('home');
+  const grid = document.getElementById('grid');
+  const detail = document.getElementById('detail');
+  const yearEl = document.getElementById('y');
+  yearEl.textContent = new Date().getFullYear();
+
+  function renderHome(){
+    homeView.classList.add('active');
+    detail.classList.remove('active');
+    grid.innerHTML = '';
+    projects.forEach(p => {
+      const card = document.createElement('a');
+      card.className = 'card';
+      card.href = `#app/${p.id}`;
+      card.setAttribute('aria-label', `${p.title} öffnen`);
+      card.innerHTML = `
+        <div class="card-inner">
+          <div class="card-head">
+            <img class="app-icon" src="${iconData(p.iconLetter, p.accent)}" alt="${p.title} Icon" />
+            <div>
+              <div class="app-title">${p.title}</div>
+              <p class="app-desc">${p.summary}</p>
+            </div>
+          </div>
+          <div class="tags">
+            ${p.tags.map(t => `<span class="tag" data-tone="${t.tone}">${t.label}</span>`).join('')}
+            </div>
+
+        </div>`;
+      grid.appendChild(card);
+    });
+  }
+
+  function renderDetail(id){
+    const p = projects.find(x => x.id === id);
+    if(!p){ location.hash = ''; return; }
+
+    homeView.classList.remove('active');
+    detail.classList.add('active');
+
+    detail.innerHTML = `
+      <a href="#" class="back">← Zurück</a>
+      <div class="detail-header">
+        <img class="detail-icon" src="${iconData(p.iconLetter, p.accent, 116)}" alt="${p.title} Icon" />
+        <div>
+          <h2 class="detail-title">${p.title}</h2>
+          <p class="detail-sub">${p.summary}</p>
+          <div class="cta">
+            <a class="btn primary" href="${p.links.download || '#'}">Download</a>
+            ${p.links.repo ? `<a class="btn" href="${p.links.repo}">GitHub</a>` : ''}
+          </div>
+        </div>
+      </div>
+
+      <div class="gallery" aria-label="Screenshots">
+        ${p.screenshots.map((s, i) => `
+          <button class="shot" data-index="${i}" aria-label="Screenshot ${i+1} anzeigen">
+            <img src="${s}" alt="${p.title} Screenshot ${i+1}" />
+          </button>
+        `).join('')}
+      </div>
+
+      <div class="section">
+        <h3>Beschreibung</h3>
+        <p>${p.description}</p>
+      </div>
+
+      <div class="section">
+        <h3>Features</h3>
+        <div class="feature-list">
+          ${p.features.map(f => `<div class="feature">${f}</div>`).join('')}
+        </div>
+      </div>
+    `;
+
+    // Shots click to lightbox
+    detail.querySelectorAll('.shot').forEach(btn => {
+      btn.addEventListener('click', () => openLightbox(p.screenshots, Number(btn.dataset.index)));
+    });
+  }
+
+  // ---------- Lightbox ----------
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  const lbPrev = document.getElementById('lb-prev');
+  const lbNext = document.getElementById('lb-next');
+  const lbClose = document.getElementById('lb-close');
+  let lbShots = [];
+  let lbIndex = 0;
+
+  function openLightbox(shots, index=0){
+    lbShots = shots; lbIndex = index;
+    updateLightbox();
+    lb.classList.add('open');
+  }
+  function updateLightbox(){ lbImg.src = lbShots[lbIndex]; }
+  function closeLightbox(){ lb.classList.remove('open'); lbShots = []; }
+
+  lbPrev.addEventListener('click', () => { lbIndex = (lbIndex - 1 + lbShots.length) % lbShots.length; updateLightbox(); });
+  lbNext.addEventListener('click', () => { lbIndex = (lbIndex + 1) % lbShots.length; updateLightbox(); });
+  lbClose.addEventListener('click', closeLightbox);
+  lb.addEventListener('click', e => { if(e.target === lb) closeLightbox(); });
+  window.addEventListener('keydown', e => {
+    if(!lb.classList.contains('open')) return;
+    if(e.key === 'Escape') closeLightbox();
+    if(e.key === 'ArrowLeft') lbPrev.click();
+    if(e.key === 'ArrowRight') lbNext.click();
+  });
+
+  // ---------- Routing ----------
+  function onRoute(){
+    const h = location.hash;
+    const match = h.match(/^#app\/(.+)$/);
+    if(match){ renderDetail(match[1]); }
+    else { renderHome(); }
+  }
+  window.addEventListener('hashchange', onRoute);
+  onRoute();
+
+  // ---------- Icon und Screenshot Generator als SVG Data URLs ----------
+  function iconData(letter = 'A', color = '#0a84ff', size = 64){
+    const svg = encodeURIComponent(`
+      <svg xmlns='http://www.w3.org/2000/svg' width='${size}' height='${size}' viewBox='0 0 100 100'>
+        <defs>
+          <linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>
+            <stop offset='0%' stop-color='${color}'/>
+            <stop offset='100%' stop-color='${shade(color, -20)}'/>
+          </linearGradient>
+        </defs>
+        <rect x='0' y='0' width='100' height='100' rx='22' ry='22' fill='url(#g)'/>
+        <circle cx='75' cy='20' r='8' fill='rgba(255,255,255,0.28)'/>
+        <text x='50' y='58' font-family='SF Pro Display, Arial, sans-serif' font-size='54' font-weight='700' text-anchor='middle' fill='white'>${letter}</text>
+      </svg>`);
+    return `data:image/svg+xml;charset=utf-8,${svg}`;
+  }
+
+  function placeholderShots(label, color){
+    const shades = [0, -8, -16];
+    return shades.map((s, i) => svgShot(`${label} ${i+1}`, shade(color, s)));
+  }
+
+  function svgShot(text, color){
+    const svg = encodeURIComponent(`
+      <svg xmlns='http://www.w3.org/2000/svg' width='1200' height='800' viewBox='0 0 1200 800'>
+        <defs>
+          <linearGradient id='bg' x1='0' y1='0' x2='1' y2='1'>
+            <stop offset='0%' stop-color='${color}'/>
+            <stop offset='100%' stop-color='${shade(color, -24)}'/>
+          </linearGradient>
+        </defs>
+        <rect width='1200' height='800' fill='url(#bg)'/>
+        <g opacity='0.18'>
+          <circle cx='200' cy='160' r='120' fill='white'/>
+          <circle cx='980' cy='200' r='90' fill='white'/>
+          <circle cx='600' cy='650' r='140' fill='white'/>
+        </g>
+        <rect x='120' y='140' width='960' height='520' rx='26' fill='rgba(255,255,255,0.08)' stroke='rgba(255,255,255,0.35)'/>
+        <text x='600' y='420' font-family='SF Pro Display, Arial, sans-serif' font-size='56' font-weight='700' text-anchor='middle' fill='white'>${text}</text>
+      </svg>`);
+    return `data:image/svg+xml;charset=utf-8,${svg}`;
+  }
+
+  function shade(hex, percent){
+    // percent negative = darker
+    let c = hex.replace('#','');
+    if(c.length===3){ c = c.split('').map(x=>x+x).join(''); }
+    const num = parseInt(c,16);
+    let r = (num >> 16) & 0xff;
+    let g = (num >> 8) & 0xff;
+    let b = num & 0xff;
+    r = clamp(Math.round(r * (100 + percent) / 100), 0, 255);
+    g = clamp(Math.round(g * (100 + percent) / 100), 0, 255);
+    b = clamp(Math.round(b * (100 + percent) / 100), 0, 255);
+    return '#' + [r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('');
+  }
+  function clamp(v, min, max){ return Math.min(max, Math.max(min, v)); }
+</script>
+</body>
+</html>
